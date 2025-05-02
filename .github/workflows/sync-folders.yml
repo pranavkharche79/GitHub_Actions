@@ -1,0 +1,37 @@
+name: Sync Folders
+
+on:
+  push:
+    paths:
+      - "First_folder/**"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Sync First_folder to Second_folder
+        run: |
+          # Create Second_folder if it doesn't exist
+          mkdir -p Second_folder
+
+          # Copy all files from First_folder to Second_folder
+          cp -R First_folder/* Second_folder/
+
+          # Check if there are any changes
+          if git diff --quiet Second_folder; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Configure Git
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+          # Add, commit and push changes
+          git add Second_folder/
+          git commit -m "Sync: Update Second_folder with changes from First_folder"
+          git push
