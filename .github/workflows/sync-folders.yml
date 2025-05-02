@@ -38,9 +38,17 @@ jobs:
             echo "Second_folder already exists"
           fi
 
+          # Clear the Second_folder to handle deletions
+          echo "Clearing Second_folder to handle deleted files"
+          rm -rf Second_folder/*
+
           # Copy all files from First_folder to Second_folder
           echo "Copying files from First_folder to Second_folder"
-          cp -Rv First_folder/* Second_folder/ || true
+          if [ "$(ls -A First_folder 2>/dev/null)" ]; then
+            cp -Rv First_folder/* Second_folder/ || true
+          else
+            echo "First_folder is empty, nothing to copy"
+          fi
 
           # List files after copy
           echo "Files in Second_folder after copy:"
