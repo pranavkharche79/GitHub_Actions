@@ -21,20 +21,38 @@ jobs:
           fetch-depth: 0
           ref: main
 
+      - name: Debug - List files before sync
+        run: |
+          echo "Files in First_folder:"
+          ls -la First_folder/
+          echo "Files in Second_folder (if it exists):"
+          ls -la Second_folder/ || echo "Second_folder does not exist yet"
+
       - name: Sync First_folder to Second_folder
         run: |
           # Create Second_folder if it doesn't exist
           if [ ! -d "Second_folder" ]; then
             mkdir Second_folder
+            echo "Created Second_folder directory"
+          else
+            echo "Second_folder already exists"
           fi
 
           # Copy all files from First_folder to Second_folder
-          cp -R First_folder/* Second_folder/ || true
+          echo "Copying files from First_folder to Second_folder"
+          cp -Rv First_folder/* Second_folder/ || true
+
+          # List files after copy
+          echo "Files in Second_folder after copy:"
+          ls -la Second_folder/
 
           # Check if there are any changes
           if git diff --quiet Second_folder; then
             echo "No changes to commit"
             exit 0
+          else
+            echo "Changes detected in Second_folder"
+            git diff Second_folder
           fi
 
           # Configure Git
@@ -42,6 +60,8 @@ jobs:
           git config --global user.email "actions@github.com"
 
           # Add, commit and push changes
+          echo "Committing and pushing changes"
           git add Second_folder/
           git commit -m "Sync: Update Second_folder with changes from First_folder"
           git push origin main
+          echo "Sync completed successfully"
