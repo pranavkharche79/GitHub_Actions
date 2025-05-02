@@ -22,7 +22,9 @@ jobs:
       - name: Sync First_folder to Second_folder
         run: |
           # Create Second_folder if it doesn't exist
-          mkdir Second_folder
+          if [ ! -d "Second_folder" ]; then
+            mkdir Second_folder
+          fi
 
           # Copy all files from First_folder to Second_folder
           cp -R First_folder/* Second_folder/ || true
