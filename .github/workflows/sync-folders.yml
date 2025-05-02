@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - "First_folder/**"
+  workflow_dispatch:
+    # Allows manual triggering of the workflow
 
 permissions:
   contents: write
