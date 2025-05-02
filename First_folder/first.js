@@ -1,7 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function first() {
-  return (
-    <div>first</div>
-  )
+  return <div>first 123</div>;
 }

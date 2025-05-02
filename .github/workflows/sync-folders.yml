@@ -5,6 +5,9 @@ on:
     paths:
       - "First_folder/**"
 
+permissions:
+  contents: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -12,6 +15,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: main
 
       - name: Sync First_folder to Second_folder
         run: |
@@ -19,7 +25,7 @@ jobs:
           mkdir -p Second_folder
 
           # Copy all files from First_folder to Second_folder
-          cp -R First_folder/* Second_folder/
+          cp -R First_folder/* Second_folder/ || true
 
           # Check if there are any changes
           if git diff --quiet Second_folder; then
@@ -34,4 +40,4 @@ jobs:
           # Add, commit and push changes
           git add Second_folder/
           git commit -m "Sync: Update Second_folder with changes from First_folder"
-          git push
+          git push origin main
